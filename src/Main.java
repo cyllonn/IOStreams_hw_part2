@@ -14,9 +14,12 @@ public class Main {
         saveGame(PATH + "game1.dat", game1);
         saveGame(PATH + "game2.dat", game2);
         saveGame(PATH + "game3.dat", game3);
-        zipFiles(zipPath, pathArray);
-
-
+        if (zipFiles(zipPath, pathArray)) {
+            for (String s : pathArray) {
+                File file = new File(s);
+                file.delete();
+            }
+        }
     }
 
     public static void saveGame(String path, GameProgress gameProgress) {
@@ -29,7 +32,7 @@ public class Main {
         }
     }
 
-    public static void zipFiles(String pathZip, String[] list) {
+    public static boolean zipFiles(String pathZip, String[] list) {
 
         try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(pathZip, true))) {
             for (String path : list) {
@@ -42,11 +45,12 @@ public class Main {
                 zout.write(buffer);
                 zout.closeEntry();
                 fis.close();
-                file.delete();
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            return false;
         }
+        return true;
     }
 }
 
